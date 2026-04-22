@@ -25,7 +25,7 @@ public class AlertItem : INotifyPropertyChanged
     public double TargetPrice => Model.TargetPrice;
     public string Condition   => Model.Condition == AlertCondition.Above ? "▲ Above" : "▼ Below";
     public string Note        => Model.Note;
-    public string SourceBadge => Model.Source == PriceSource.TradingView ? "📺 TV" : "🔶 Binance";
+    public string SourceBadge => Model.Source == PriceSource.TradingView ? "📺 TV +$18" : "🔶 Binance";
     public string UiKey       => AlertEngine.UiKey(Model.Symbol, Model.Source);
 
     public string LivePrice

@@ -14,6 +14,7 @@
         <conv:BoolToVisibilityConverter x:Key="BoolToVis"/>
         <conv:InverseBoolConverter      x:Key="InvBool"/>
         <conv:ConditionIndexConverter   x:Key="ConditionIdx"/>
+        <conv:PriceSourceToStringConverter x:Key="SourceToString"/>
 
         <!-- Dark ComboBox ControlTemplate -->
         <ControlTemplate x:Key="DarkComboBoxToggle" TargetType="ToggleButton">
@@ -267,6 +268,7 @@
                               Text="{Binding NewSymbol, UpdateSourceTrigger=PropertyChanged}"
                               IsEditable="True">
                         <ComboBoxItem>BTCUSDT</ComboBoxItem>
+                        <ComboBoxItem>BTCUSD</ComboBoxItem>
                         <ComboBoxItem>ETHUSDT</ComboBoxItem>
                         <ComboBoxItem>BNBUSDT</ComboBoxItem>
                         <ComboBoxItem>SOLUSDT</ComboBoxItem>
@@ -286,20 +288,7 @@
                               SelectedItem="{Binding NewSource}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock>
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding}" Value="0">
-                                                    <Setter Property="Text" Value="🔶 Binance"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding}" Value="1">
-                                                    <Setter Property="Text" Value="📺 TradingView"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
+                                <TextBlock Text="{Binding Converter={StaticResource SourceToString}}" Foreground="White"/>
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
@@ -381,7 +370,7 @@
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Foreground" Value="#FFD54F"/>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding SourceBadge}" Value="📺 TV">
+                                                <DataTrigger Binding="{Binding SourceBadge}" Value="📺 TV +$18">
                                                     <Setter Property="Foreground" Value="#29B6F6"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
