@@ -11,14 +11,26 @@ public class AudioService : IDisposable
 
     public double Volume { get; set; } = 1.0;
 
+    // Returns the resolved absolute path for display in Settings
+    public static string ResolveDisplayPath(string soundFile)
+    {
+        if (soundFile is "default" or "default_mp3")
+            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "alert.mp3");
+        return soundFile;
+    }
+
     public void PlayLoop(string soundFile)
     {
         Stop();
         try
         {
-            var path = soundFile == "default"
-                ? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "alert.wav")
+            string path = soundFile is "default" or "default_mp3"
+                ? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "alert.mp3")
                 : soundFile;
+
+            // Fallback chain: alert.mp3 → alert.wav → beep
+            if (!File.Exists(path))
+                path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "alert.wav");
 
             if (!File.Exists(path)) { PlayBeep(); return; }
 
@@ -45,7 +57,6 @@ public class AudioService : IDisposable
     public void Dispose() { if (!_disposed) { Stop(); _disposed = true; } }
 }
 
-// Wraps a stream to loop it indefinitely
 internal class LoopStream(WaveStream source) : WaveStream
 {
     public override WaveFormat WaveFormat => source.WaveFormat;

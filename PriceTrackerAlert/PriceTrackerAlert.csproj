@@ -25,6 +25,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\alert.wav" />
+    <Resource Include="Assets\alert.mp3" />
     <Resource Include="Assets\icon.ico" />
   </ItemGroup>
 </Project>
