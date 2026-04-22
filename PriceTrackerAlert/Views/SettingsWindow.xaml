@@ -1,34 +1,133 @@
 <Window x:Class="PriceTrackerAlert.Views.SettingsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Settings" Width="460" Height="500"
+        Title="⚙ Settings" Width="480" Height="540"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
-        Background="#1E1E2E">
+        Background="#1E1E2E"
+        Icon="/Assets/icon.ico">
+
     <Window.Resources>
-        <Style TargetType="TextBlock">
-            <Setter Property="Foreground" Value="#B0BEC5"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
+
+        <!-- Dark ComboBox -->
+        <Style x:Key="DarkComboBox" TargetType="ComboBox">
+            <Setter Property="Background" Value="#2D2D3F"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#555"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Height" Value="34"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <Border Background="#2D2D3F" BorderBrush="#555" BorderThickness="1" CornerRadius="3"/>
+                            <Grid Margin="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="24"/>
+                                </Grid.ColumnDefinitions>
+                                <ContentPresenter x:Name="ContentSite"
+                                                  Content="{TemplateBinding SelectionBoxItem}"
+                                                  Margin="10,0,0,0" VerticalAlignment="Center"
+                                                  IsHitTestVisible="False"/>
+                                <ToggleButton Grid.ColumnSpan="2"
+                                              IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                              Background="Transparent" BorderThickness="0" Opacity="0"/>
+                                <Path Grid.Column="1" Data="M0,0 L4,5 L8,0" Stroke="#B0BEC5"
+                                      StrokeThickness="1.5" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                      IsHitTestVisible="False"/>
+                            </Grid>
+                            <Popup x:Name="PART_Popup"
+                                   IsOpen="{TemplateBinding IsDropDownOpen}"
+                                   AllowsTransparency="True" Focusable="False"
+                                   PopupAnimation="Slide" Placement="Bottom">
+                                <Border Background="#2D2D3F" BorderBrush="#555" BorderThickness="1"
+                                        MinWidth="{TemplateBinding ActualWidth}">
+                                    <ScrollViewer>
+                                        <ItemsPresenter/>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="ItemContainerStyle">
+                <Setter.Value>
+                    <Style TargetType="ComboBoxItem">
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="Background" Value="#2D2D3F"/>
+                        <Setter Property="Padding" Value="10,7"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ComboBoxItem">
+                                    <Border x:Name="Bd" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsHighlighted" Value="True">
+                                            <Setter TargetName="Bd" Property="Background" Value="#3D3D5F"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Setter.Value>
+            </Setter>
         </Style>
+
+        <!-- Dark TextBox -->
         <Style TargetType="TextBox">
             <Setter Property="Background" Value="#2D2D3F"/>
             <Setter Property="Foreground" Value="White"/>
-            <Setter Property="BorderBrush" Value="#444"/>
-            <Setter Property="Padding" Value="6,4"/>
-            <Setter Property="Height" Value="32"/>
+            <Setter Property="CaretBrush" Value="White"/>
+            <Setter Property="BorderBrush" Value="#555"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,0"/>
+            <Setter Property="Height" Value="34"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="3">
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}"
+                                          VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="BorderBrush" Value="#4CAF50"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
-        <Style TargetType="ComboBox">
-            <Setter Property="Background" Value="#2D2D3F"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Height" Value="32"/>
-        </Style>
+
+        <!-- Dark CheckBox -->
         <Style TargetType="CheckBox">
             <Setter Property="Foreground" Value="#B0BEC5"/>
             <Setter Property="FontSize" Value="13"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
-        <Style TargetType="Slider">
-            <Setter Property="Foreground" Value="#4CAF50"/>
+
+        <!-- Label style -->
+        <Style x:Key="FieldLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#546E7A"/>
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,0,0,5"/>
+        </Style>
+
+        <!-- Section label -->
+        <Style x:Key="SectionLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#78909C"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,16,0,8"/>
         </Style>
     </Window.Resources>
 
@@ -38,73 +137,138 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" VerticalAlignment="Top">
-            <TextBlock Text="⚙ Settings" FontSize="18" FontWeight="Bold"
-                       Foreground="White" Margin="0,0,0,20"/>
+        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <TextBlock Text="⚙  Settings" FontSize="20" FontWeight="Bold"
+                           Foreground="White" Margin="0,0,0,24"/>
 
-            <!-- Check Interval -->
-            <Grid Margin="0,0,0,12">
-                <Grid.ColumnDefinitions><ColumnDefinition Width="180"/><ColumnDefinition/></Grid.ColumnDefinitions>
-                <TextBlock Text="Check Interval (seconds)"/>
-                <ComboBox Grid.Column="1" x:Name="IntervalCombo">
-                    <ComboBoxItem Content="1"/>
-                    <ComboBoxItem Content="5"/>
-                    <ComboBoxItem Content="10"/>
-                    <ComboBoxItem Content="30"/>
-                </ComboBox>
-            </Grid>
+                <!-- POLLING -->
+                <TextBlock Text="POLLING" Style="{StaticResource SectionLabel}"/>
+                <Grid Margin="0,0,0,14">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="190"/><ColumnDefinition/></Grid.ColumnDefinitions>
+                    <TextBlock Text="CHECK INTERVAL" Style="{StaticResource FieldLabel}" VerticalAlignment="Center"/>
+                    <ComboBox Grid.Column="1" x:Name="IntervalCombo" Style="{StaticResource DarkComboBox}">
+                        <ComboBoxItem>1 second</ComboBoxItem>
+                        <ComboBoxItem>5 seconds</ComboBoxItem>
+                        <ComboBoxItem>10 seconds</ComboBoxItem>
+                        <ComboBoxItem>30 seconds</ComboBoxItem>
+                    </ComboBox>
+                </Grid>
 
-            <!-- Volume -->
-            <Grid Margin="0,0,0,12">
-                <Grid.ColumnDefinitions><ColumnDefinition Width="180"/><ColumnDefinition/></Grid.ColumnDefinitions>
-                <TextBlock Text="Volume"/>
-                <Slider Grid.Column="1" x:Name="VolumeSlider" Minimum="0" Maximum="1"
-                        TickFrequency="0.1" IsSnapToTickEnabled="True" VerticalAlignment="Center"/>
-            </Grid>
+                <!-- SOUND -->
+                <TextBlock Text="SOUND" Style="{StaticResource SectionLabel}"/>
+                <CheckBox x:Name="SoundCheck" Content="Enable alert sound" Margin="0,0,0,12"/>
+                <Grid Margin="0,0,0,6">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="190"/><ColumnDefinition/></Grid.ColumnDefinitions>
+                    <TextBlock Text="VOLUME" Style="{StaticResource FieldLabel}" VerticalAlignment="Center"/>
+                    <Grid Grid.Column="1">
+                        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="36"/></Grid.ColumnDefinitions>
+                        <Slider x:Name="VolumeSlider" Minimum="0" Maximum="1" TickFrequency="0.1"
+                                IsSnapToTickEnabled="True" VerticalAlignment="Center"
+                                Foreground="#4CAF50"/>
+                        <TextBlock Grid.Column="1" Foreground="#B0BEC5" FontSize="12" VerticalAlignment="Center"
+                                   HorizontalAlignment="Right"
+                                   Text="{Binding Value, ElementName=VolumeSlider, StringFormat={}{0:P0}}"/>
+                    </Grid>
+                </Grid>
+                <Grid Margin="0,0,0,14">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="190"/><ColumnDefinition/><ColumnDefinition Width="38"/></Grid.ColumnDefinitions>
+                    <TextBlock Text="SOUND FILE" Style="{StaticResource FieldLabel}" VerticalAlignment="Center"/>
+                    <TextBox Grid.Column="1" x:Name="SoundFileBox" IsReadOnly="True"/>
+                    <Button Grid.Column="2" Content="…" Margin="6,0,0,0" Height="34"
+                            Background="#3D3D5F" Foreground="White" BorderThickness="0"
+                            Cursor="Hand" Click="BrowseSound_Click">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" CornerRadius="3">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#4D4D6F"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </Grid>
 
-            <!-- Sound enabled -->
-            <CheckBox x:Name="SoundCheck" Content="Enable alert sound" Margin="0,0,0,12"/>
+                <!-- WINDOW -->
+                <TextBlock Text="WINDOW" Style="{StaticResource SectionLabel}"/>
+                <CheckBox x:Name="TopCheck" Content="Popup always on top" Margin="0,0,0,10"/>
+                <CheckBox x:Name="AutoStartCheck" Content="Auto-start with Windows" Margin="0,0,0,14"/>
 
-            <!-- Sound file -->
-            <Grid Margin="0,0,0,12">
-                <Grid.ColumnDefinitions><ColumnDefinition Width="180"/><ColumnDefinition/><ColumnDefinition Width="36"/></Grid.ColumnDefinitions>
-                <TextBlock Text="Sound file"/>
-                <TextBox Grid.Column="1" x:Name="SoundFileBox" IsReadOnly="True"/>
-                <Button Grid.Column="2" Content="…" Margin="4,0,0,0" Background="#444"
-                        Foreground="White" BorderThickness="0" Click="BrowseSound_Click"/>
-            </Grid>
+                <!-- API KEYS -->
+                <TextBlock Text="API KEYS" Style="{StaticResource SectionLabel}"/>
+                <Grid Margin="0,0,0,12">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="190"/><ColumnDefinition/></Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="METALS-API KEY" Style="{StaticResource FieldLabel}"/>
+                        <TextBlock Text="Gold &amp; Silver" Foreground="#37474F" FontSize="11"/>
+                    </StackPanel>
+                    <TextBox Grid.Column="1" x:Name="GoldKeyBox" VerticalAlignment="Center"/>
+                </Grid>
+                <Grid Margin="0,0,0,12">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="190"/><ColumnDefinition/></Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="ALPHA VANTAGE KEY" Style="{StaticResource FieldLabel}"/>
+                        <TextBlock Text="WTI Oil" Foreground="#37474F" FontSize="11"/>
+                    </StackPanel>
+                    <TextBox Grid.Column="1" x:Name="OilKeyBox" VerticalAlignment="Center"/>
+                </Grid>
 
-            <!-- Always on top -->
-            <CheckBox x:Name="TopCheck" Content="Popup always on top" Margin="0,0,0,12"/>
-
-            <!-- Auto start -->
-            <CheckBox x:Name="AutoStartCheck" Content="Auto-start with Windows" Margin="0,0,0,12"/>
-
-            <!-- Gold API key -->
-            <Grid Margin="0,0,0,12">
-                <Grid.ColumnDefinitions><ColumnDefinition Width="180"/><ColumnDefinition/></Grid.ColumnDefinitions>
-                <TextBlock Text="Metals-API key (GOLD)"/>
-                <TextBox Grid.Column="1" x:Name="GoldKeyBox"/>
-            </Grid>
-
-            <!-- Oil API key -->
-            <Grid Margin="0,0,0,12">
-                <Grid.ColumnDefinitions><ColumnDefinition Width="180"/><ColumnDefinition/></Grid.ColumnDefinitions>
-                <TextBlock Text="Alpha Vantage key (OIL)"/>
-                <TextBox Grid.Column="1" x:Name="OilKeyBox"/>
-            </Grid>
-
-            <TextBlock FontSize="11" Foreground="#546E7A" TextWrapping="Wrap"
-                       Text="Free API keys: metals-api.com | alphavantage.co  |  Crypto via Binance (no key needed)"/>
-        </StackPanel>
+                <Border Background="#0D1A0D" CornerRadius="4" Padding="12,8" Margin="0,4,0,0">
+                    <TextBlock Foreground="#4CAF50" FontSize="11" TextWrapping="Wrap">
+                        💡 Crypto (BTC/ETH/BNB/SOL/XRP) works with no API key via Binance.
+                        Get free keys at metals-api.com and alphavantage.co
+                    </TextBlock>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
 
         <!-- Save / Cancel -->
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
-            <Button Content="Cancel" Width="90" Height="36" Margin="0,0,10,0"
-                    Background="#444" Foreground="White" BorderThickness="0" Click="Cancel_Click"/>
-            <Button Content="Save" Width="90" Height="36"
-                    Background="#4CAF50" Foreground="White" FontWeight="Bold"
-                    BorderThickness="0" Click="Save_Click"/>
-        </StackPanel>
+        <Border Grid.Row="1" BorderBrush="#2D2D3F" BorderThickness="0,1,0,0" Margin="0,16,0,0" Padding="0,16,0,0">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Cancel" Width="100" Height="38" Margin="0,0,10,0"
+                        Cursor="Hand" Click="Cancel_Click">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="#2D2D3F" CornerRadius="4" BorderBrush="#555" BorderThickness="1">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#3D3D5F"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                    <Button.Foreground>
+                        <SolidColorBrush Color="#B0BEC5"/>
+                    </Button.Foreground>
+                </Button>
+                <Button Content="💾  Save Settings" Width="140" Height="38"
+                        FontWeight="Bold" Cursor="Hand" Click="Save_Click">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="#4CAF50" CornerRadius="4">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#43A047"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter Property="Background" Value="#388E3C"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                    <Button.Foreground>
+                        <SolidColorBrush Color="White"/>
+                    </Button.Foreground>
+                </Button>
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>
