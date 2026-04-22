@@ -4,12 +4,12 @@ namespace PriceTrackerAlert.Services;
 
 public class AlertEngine
 {
-    private readonly PriceService _prices;
+    private readonly PriceService  _prices;
     private readonly StorageService _storage;
     private CancellationTokenSource? _cts;
 
     public event Action<Alert, double>? AlertTriggered;
-    public event Action<string, string>? PriceUpdated;   // symbol, formatted price
+    public event Action<string, string>? PriceUpdated;  // symbol+source key, formatted price
     public event Action<string>? StatusChanged;
 
     public AlertEngine(PriceService prices, StorageService storage)
@@ -40,11 +40,16 @@ public class AlertEngine
     public async Task CheckAllAlerts()
     {
         var alerts = _storage.GetAlerts().Where(a => a.IsActive).ToList();
-        var symbols = alerts.Select(a => a.Symbol.ToUpper()).Distinct();
 
-        foreach (var symbol in symbols)
+        // Group by (Symbol, Source) so each unique feed is fetched once
+        var groups = alerts
+            .GroupBy(a => (Symbol: a.Symbol.ToUpper(), a.Source))
+            .ToList();
+
+        foreach (var group in groups)
         {
-            var (price, error) = await _prices.GetPriceAsync(symbol);
+            var (symbol, source) = group.Key;
+            var (price, error)   = await _prices.GetPriceAsync(symbol, source);
 
             if (!string.IsNullOrEmpty(error))
             {
@@ -52,9 +57,11 @@ public class AlertEngine
                 continue;
             }
 
-            PriceUpdated?.Invoke(symbol, FormatPrice(symbol, price));
+            // Key used to match AlertItems in the UI
+            string uiKey = UiKey(symbol, source);
+            PriceUpdated?.Invoke(uiKey, FormatPrice(symbol, price));
 
-            foreach (var alert in alerts.Where(a => a.Symbol.ToUpper() == symbol && !a.IsTriggered))
+            foreach (var alert in group.Where(a => !a.IsTriggered))
             {
                 bool hit = alert.Condition == AlertCondition.Above
                     ? price >= alert.TargetPrice
@@ -68,18 +75,22 @@ public class AlertEngine
                 }
             }
         }
+
         StatusChanged?.Invoke($"Last check: {DateTime.Now:HH:mm:ss}");
     }
 
     public void ResetAlert(int alertId)
     {
-        var alerts = _storage.GetAlerts();
-        var alert = alerts.FirstOrDefault(a => a.Id == alertId);
+        var alert = _storage.GetAlerts().FirstOrDefault(a => a.Id == alertId);
         if (alert == null) return;
         alert.IsTriggered = false;
         _storage.UpdateAlert(alert);
     }
 
+    // Unique key per symbol+source for UI live price matching
+    public static string UiKey(string symbol, PriceSource source) =>
+        source == PriceSource.TradingView ? $"{symbol.ToUpper()}|TV" : symbol.ToUpper();
+
     private static string FormatPrice(string symbol, double price) =>
-        symbol is "BTCUSDT" ? $"${price:N0}" : $"${price:N2}";
+        symbol is "BTCUSDT" or "BTCUSD" ? $"${price:N2}" : $"${price:N2}";
 }

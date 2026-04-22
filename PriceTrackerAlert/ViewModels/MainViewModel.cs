@@ -18,6 +18,7 @@ public class MainViewModel : INotifyPropertyChanged
     private string _newSymbol  = "BTCUSDT";
     private double _newTarget  = 100000;
     private AlertCondition _newCondition = AlertCondition.Above;
+    private PriceSource    _newSource    = PriceSource.Binance;
     private string _newNote = "";
 
     public ObservableCollection<AlertItem> Alerts { get; } = [];
@@ -32,7 +33,15 @@ public class MainViewModel : INotifyPropertyChanged
     public string NewSymbol
     {
         get => _newSymbol;
-        set { _newSymbol = value.ToUpper(); OnPropertyChanged(); }
+        set
+        {
+            _newSymbol = value.ToUpper();
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(AvailableSources));
+            // Reset to Binance if TV not available for this symbol
+            if (!PriceService.TradingViewMap.ContainsKey(_newSymbol))
+                NewSource = PriceSource.Binance;
+        }
     }
 
     public double NewTarget
@@ -52,6 +61,18 @@ public class MainViewModel : INotifyPropertyChanged
         get => _newNote;
         set { _newNote = value; OnPropertyChanged(); }
     }
+
+    public PriceSource NewSource
+    {
+        get => _newSource;
+        set { _newSource = value; OnPropertyChanged(); }
+    }
+
+    // Available sources for the symbol currently selected
+    public List<PriceSource> AvailableSources =>
+        PriceService.TradingViewMap.ContainsKey(_newSymbol.ToUpper())
+            ? [PriceSource.Binance, PriceSource.TradingView]
+            : [PriceSource.Binance];
 
     public bool TestMode
     {
@@ -102,6 +123,7 @@ public class MainViewModel : INotifyPropertyChanged
             Symbol      = NewSymbol,
             TargetPrice = NewTarget,
             Condition   = NewCondition,
+            Source      = NewSource,
             Note        = NewNote,
             IsActive    = true
         };
@@ -159,11 +181,11 @@ public class MainViewModel : INotifyPropertyChanged
         });
     }
 
-    private void OnPriceUpdated(string symbol, string price)
+    private void OnPriceUpdated(string uiKey, string price)
     {
         Application.Current.Dispatcher.Invoke(() =>
         {
-            foreach (var item in Alerts.Where(a => a.Symbol.ToUpper() == symbol))
+            foreach (var item in Alerts.Where(a => a.UiKey == uiKey))
                 item.LivePrice = price;
         });
     }

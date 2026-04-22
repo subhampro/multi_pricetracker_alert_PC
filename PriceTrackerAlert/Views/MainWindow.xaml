@@ -252,8 +252,9 @@
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="110"/>
                     <ColumnDefinition Width="140"/>
-                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="110"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
@@ -276,8 +277,36 @@
                     </ComboBox>
                 </StackPanel>
 
-                <!-- Target Price -->
+                <!-- Source -->
                 <StackPanel Grid.Column="1" Margin="0,0,10,0">
+                    <TextBlock Text="SOURCE" Foreground="#546E7A" FontSize="10" FontWeight="Bold"
+                               Margin="0,0,0,5"/>
+                    <ComboBox Style="{StaticResource DarkComboBox}"
+                              ItemsSource="{Binding AvailableSources}"
+                              SelectedItem="{Binding NewSource}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding}" Value="0">
+                                                    <Setter Property="Text" Value="🔶 Binance"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding}" Value="1">
+                                                    <Setter Property="Text" Value="📺 TradingView"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+
+                <!-- Target Price -->
+                <StackPanel Grid.Column="2" Margin="0,0,10,0">
                     <TextBlock Text="TARGET PRICE" Foreground="#546E7A" FontSize="10" FontWeight="Bold"
                                Margin="0,0,0,5"/>
                     <TextBox Style="{StaticResource InputBox}"
@@ -285,7 +314,7 @@
                 </StackPanel>
 
                 <!-- Condition -->
-                <StackPanel Grid.Column="2" Margin="0,0,10,0">
+                <StackPanel Grid.Column="3" Margin="0,0,10,0">
                     <TextBlock Text="CONDITION" Foreground="#546E7A" FontSize="10" FontWeight="Bold"
                                Margin="0,0,0,5"/>
                     <ComboBox Style="{StaticResource DarkComboBox}"
@@ -296,7 +325,7 @@
                 </StackPanel>
 
                 <!-- Note -->
-                <StackPanel Grid.Column="3" Margin="0,0,10,0">
+                <StackPanel Grid.Column="4" Margin="0,0,10,0">
                     <TextBlock Text="NOTE (OPTIONAL)" Foreground="#546E7A" FontSize="10" FontWeight="Bold"
                                Margin="0,0,0,5"/>
                     <TextBox Style="{StaticResource InputBox}"
@@ -304,7 +333,7 @@
                 </StackPanel>
 
                 <!-- Add Button -->
-                <Button Grid.Column="4" Content="＋  Add Alert"
+                <Button Grid.Column="5" Content="＋  Add Alert"
                         Background="#4CAF50" Foreground="White" FontWeight="Bold" FontSize="13"
                         BorderThickness="0" Padding="18,0" Height="34"
                         VerticalAlignment="Bottom" Cursor="Hand"
@@ -341,6 +370,24 @@
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Symbol}" Foreground="White" FontWeight="SemiBold"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="SOURCE" Width="100">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding SourceBadge}" FontSize="11">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="#FFD54F"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding SourceBadge}" Value="📺 TV">
+                                                    <Setter Property="Foreground" Value="#29B6F6"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
