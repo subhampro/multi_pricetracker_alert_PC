@@ -1,0 +1,25 @@
+# Build output
+bin/
+obj/
+publish/
+GenWav/
+
+# VS / Rider
+.vs/
+.idea/
+*.user
+*.suo
+
+# NuGet
+*.nupkg
+packages/
+
+# Logs
+*.log
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Generated WAV script
+gen_wav.csx
