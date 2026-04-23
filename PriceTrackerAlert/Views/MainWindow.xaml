@@ -506,8 +506,8 @@
         <Border Grid.Row="3" Background="#0D0D1A" Padding="16,7">
             <Grid>
                 <TextBlock Text="{Binding StatusText}" Foreground="#546E7A" FontSize="11"/>
-                <TextBlock Text="📈 Price Tracker Alert" Foreground="#2D2D4F" FontSize="11"
-                           HorizontalAlignment="Right"/>
+                <TextBlock Text="{Binding CurrentVersion, StringFormat='📈 Price Tracker Alert  v{0}'}" 
+                           Foreground="#2D2D4F" FontSize="11" HorizontalAlignment="Right"/>
             </Grid>
         </Border>
     </Grid>

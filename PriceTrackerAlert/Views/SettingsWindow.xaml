@@ -370,7 +370,7 @@
         <!-- Footer buttons -->
         <Border Grid.Row="2" Background="#12121C" Padding="24,14">
             <Grid>
-                <TextBlock Text="v1.5.0" Foreground="#2D2D4F" FontSize="11" VerticalAlignment="Center"/>
+                <TextBlock Text="v1.5.1" Foreground="#2D2D4F" FontSize="11" VerticalAlignment="Center"/>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button Content="Cancel" Width="100" Height="38" Margin="0,0,10,0"
                             Cursor="Hand" Click="Cancel_Click">

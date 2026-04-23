@@ -85,6 +85,8 @@ public class MainViewModel : INotifyPropertyChanged
     public bool ShowSourceSelector =>
         PriceService.TradingViewMap.ContainsKey(_newSymbol.ToUpper());
 
+    public string CurrentVersion => _updater.CurrentVersion;
+
     public bool TestMode
     {
         get => _prices.TestMode;
@@ -156,7 +158,7 @@ public class MainViewModel : INotifyPropertyChanged
         // Check for updates on startup then every 30 min
         _ = Task.Run(async () =>
         {
-            await Task.Delay(3000); // wait 3s after startup
+            await Task.Delay(1000); // wait 1s after startup
             await _updater.CheckAsync();
             while (true)
             {

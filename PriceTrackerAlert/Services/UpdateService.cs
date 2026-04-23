@@ -14,8 +14,11 @@ public class UpdateService
     private readonly HttpClient _http = new();
 
     public string CurrentVersion { get; } =
-        Assembly.GetExecutingAssembly()
-                .GetName().Version?.ToString(3) ?? "1.0.0";
+        System.Diagnostics.FileVersionInfo
+              .GetVersionInfo(Environment.ProcessPath!)
+              .ProductVersion
+              ?.Split('+')[0]  // strip any build metadata
+              ?? "1.0.0";
 
     public event Action<string, string>? UpdateAvailable;  // (latestVersion, downloadUrl)
 
