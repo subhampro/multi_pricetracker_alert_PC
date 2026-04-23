@@ -44,6 +44,7 @@ public class MainViewModel : INotifyPropertyChanged
             _newSymbol = value.ToUpper();
             OnPropertyChanged();
             OnPropertyChanged(nameof(AvailableSources));
+            OnPropertyChanged(nameof(ShowSourceSelector));
             // Reset to Binance if TV not available for this symbol
             if (!PriceService.TradingViewMap.ContainsKey(_newSymbol))
                 NewSource = PriceSource.Binance;
@@ -79,6 +80,10 @@ public class MainViewModel : INotifyPropertyChanged
         PriceService.TradingViewMap.ContainsKey(_newSymbol.ToUpper())
             ? [PriceSource.Binance, PriceSource.TradingView]
             : [PriceSource.Binance];
+
+    // Show source selector only when more than one source is available
+    public bool ShowSourceSelector =>
+        PriceService.TradingViewMap.ContainsKey(_newSymbol.ToUpper());
 
     public bool TestMode
     {

@@ -322,8 +322,9 @@
                     </ComboBox>
                 </StackPanel>
 
-                <!-- Source -->
-                <StackPanel Grid.Column="1" Margin="0,0,10,0">
+                <!-- Source - only shown for symbols with multiple sources (e.g. BTCUSDT) -->
+                <StackPanel Grid.Column="1" Margin="0,0,10,0"
+                            Visibility="{Binding ShowSourceSelector, Converter={StaticResource BoolToVis}}">
                     <TextBlock Text="SOURCE" Foreground="#546E7A" FontSize="10" FontWeight="Bold"
                                Margin="0,0,0,5"/>
                     <ComboBox Style="{StaticResource DarkComboBox}"
@@ -408,12 +409,14 @@
                     <GridViewColumn Header="SOURCE" Width="100">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding SourceBadge}" FontSize="11">
+                                <TextBlock FontSize="11">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
+                                            <Setter Property="Text" Value=""/>
                                             <Setter Property="Foreground" Value="#FFD54F"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding SourceBadge}" Value="📺 TradingView">
+                                                    <Setter Property="Text" Value="📺 TradingView"/>
                                                     <Setter Property="Foreground" Value="#29B6F6"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
