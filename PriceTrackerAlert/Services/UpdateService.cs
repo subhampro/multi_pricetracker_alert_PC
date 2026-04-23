@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
-using System.Reflection;
 using System.Text.Json;
 
 namespace PriceTrackerAlert.Services;
@@ -17,10 +16,10 @@ public class UpdateService
         System.Diagnostics.FileVersionInfo
               .GetVersionInfo(Environment.ProcessPath!)
               .ProductVersion
-              ?.Split('+')[0]  // strip any build metadata
+              ?.Split('+')[0]
               ?? "1.0.0";
 
-    public event Action<string, string>? UpdateAvailable;  // (latestVersion, downloadUrl)
+    public event Action<string, string>? UpdateAvailable;
 
     public UpdateService() => _http.DefaultRequestHeaders.Add("User-Agent", UserAgent);
 
@@ -28,15 +27,13 @@ public class UpdateService
     {
         try
         {
-            var json    = await _http.GetStringAsync(ApiUrl);
+            var json = await _http.GetStringAsync(ApiUrl);
             using var doc = JsonDocument.Parse(json);
-            var root    = doc.RootElement;
-
-            var tag     = root.GetProperty("tag_name").GetString()!.TrimStart('v');
-            var assets  = root.GetProperty("assets");
+            var root = doc.RootElement;
+            var tag  = root.GetProperty("tag_name").GetString()!.TrimStart('v');
 
             string? downloadUrl = null;
-            foreach (var asset in assets.EnumerateArray())
+            foreach (var asset in root.GetProperty("assets").EnumerateArray())
             {
                 var name = asset.GetProperty("name").GetString() ?? "";
                 if (name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
@@ -46,12 +43,10 @@ public class UpdateService
                 }
             }
 
-            if (downloadUrl == null) return;
-
-            if (IsNewer(tag, CurrentVersion))
+            if (downloadUrl != null && IsNewer(tag, CurrentVersion))
                 UpdateAvailable?.Invoke(tag, downloadUrl);
         }
-        catch { /* silent — no internet or API error */ }
+        catch { }
     }
 
     public async Task DownloadAndInstallAsync(string downloadUrl, Action<int> onProgress)
@@ -59,18 +54,16 @@ public class UpdateService
         var currentExe = Environment.ProcessPath!;
         var dir        = Path.GetDirectoryName(currentExe)!;
         var newExe     = Path.Combine(dir, "PriceTrackerAlert_new.exe");
-        var oldExe     = Path.Combine(dir, "PriceTrackerAlert_old.exe");
         var updater    = Path.Combine(dir, "updater.bat");
 
-        // Download with progress
+        // Download new exe with progress reporting
         using var response = await _http.GetAsync(downloadUrl, HttpCompletionOption.ResponseHeadersRead);
-        var total   = response.Content.Headers.ContentLength ?? -1L;
-        var buffer  = new byte[81920];
+        var total      = response.Content.Headers.ContentLength ?? -1L;
+        var buffer     = new byte[81920];
         long downloaded = 0;
 
         await using var fs     = File.Create(newExe);
         await using var stream = await response.Content.ReadAsStreamAsync();
-
         int read;
         while ((read = await stream.ReadAsync(buffer)) > 0)
         {
@@ -80,28 +73,31 @@ public class UpdateService
         }
         fs.Close();
 
-        // Write a batch script that:
-        // 1. Waits for current process to exit
-        // 2. Renames old exe, moves new exe in place
-        // 3. Starts the new exe
-        // 4. Deletes itself and the old exe
-        File.WriteAllText(updater, $@"@echo off
-timeout /t 2 /nobreak >nul
-move /y ""{currentExe}"" ""{oldExe}""
-move /y ""{newExe}"" ""{currentExe}""
-start """" ""{currentExe}""
-del ""{oldExe}"" >nul 2>&1
-del ""%~f0""
-");
+        // Write updater batch — waits for this process to exit by PID,
+        // then moves new exe over current exe (no leftover files), launches it, deletes self
+        int pid = Environment.ProcessId;
+        var lines = new[]
+        {
+            "@echo off",
+            ":waitloop",
+            $"tasklist /FI \"PID eq {pid}\" 2>nul | find \"{pid}\" >nul",
+            "if not errorlevel 1 (",
+            "    timeout /t 1 /nobreak >nul",
+            "    goto waitloop",
+            ")",
+            $"move /y \"{newExe}\" \"{currentExe}\"",
+            $"start \"\" \"{currentExe}\"",
+            "del \"%~f0\""
+        };
+        File.WriteAllLines(updater, lines);
 
         Process.Start(new ProcessStartInfo
         {
             FileName        = updater,
             CreateNoWindow  = true,
-            UseShellExecute = false
+            UseShellExecute = true
         });
 
-        // Exit current process so the batch can replace the file
         System.Windows.Application.Current.Dispatcher.Invoke(() =>
             System.Windows.Application.Current.Shutdown());
     }

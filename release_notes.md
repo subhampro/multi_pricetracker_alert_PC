@@ -1,21 +1,23 @@
-## v1.6.4 - Symbol Icons + Tray Fix
+## v1.6.5 - Real TradingView Symbol Icons + Update Fix
 
-### ✨ Symbol Icons
-- Colored circle icons now show before every symbol — matching TradingView's brand colors
-  - ₿ Bitcoin → orange #F7931A
-  - Ξ Ethereum → purple-blue #627EEA
-  - B BNB → yellow #F3BA2F
-  - ◎ Solana → purple #9945FF
-  - ✕ XRP → blue #346AA9
-  - Au Gold → gold #D4AF37
-  - Ag Silver → silver #A8A9AD
-  - 🛢 Oil → dark green
+### ✨ Real Symbol Icons
+- Actual TradingView SVG icons now shown for every symbol — exactly like TradingView's watchlist
+  - BTC → crypto/XTVCBTC (orange Bitcoin logo)
+  - ETH → crypto/XTVCETH (Ethereum diamond)
+  - BNB → crypto/XTVCBNB
+  - SOL → crypto/XTVCSOL
+  - XRP → crypto/XTVCXRP
+  - Gold → metal/gold
+  - Silver → metal/silver
+  - Oil → crude-oil
+- Icons downloaded from TradingView CDN on first launch and cached locally
+- Colored circle fallback shown instantly while SVG loads
 - Icons appear in both the symbol dropdown and the alert list
 
-### 🐛 Tray Fixes
-- X button hides to tray (keeps monitoring), minimize hides to tray
-- Double-clicking exe when already running brings existing window (single instance)
-- Tray right-click → Exit fully closes app so exe can be deleted
+### 🔧 Auto-Update Fix
+- Updater now waits for the exact process PID to exit before replacing the file
+- New exe moves directly over old exe — no leftover `_old.exe` files
+- Only `PriceTrackerAlert.exe` remains after update, nothing else
 
 ### 📦 Install
 Single `.exe` — no install needed.
