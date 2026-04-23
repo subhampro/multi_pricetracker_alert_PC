@@ -3,8 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:conv="clr-namespace:PriceTrackerAlert.Converters"
         xmlns:views="clr-namespace:PriceTrackerAlert.Views"
-        Title="Price Tracker Alert" Height="640" Width="900"
-        MinWidth="800" MinHeight="500"
+        Title="Price Tracker Alert" Height="660" Width="1100"
+        MinWidth="1000" MinHeight="500"
         Background="#12121C"
         Icon="/Assets/icon.ico"
         StateChanged="Window_StateChanged"
@@ -523,7 +523,7 @@
             </ListView.Template>
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="SYMBOL" Width="120">
+                    <GridViewColumn Header="SYMBOL" Width="110">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
@@ -536,7 +536,7 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="SOURCE" Width="100">
+                    <GridViewColumn Header="SOURCE" Width="90">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock FontSize="11">
@@ -556,7 +556,7 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="CONDITION" Width="95">
+                    <GridViewColumn Header="CONDITION" Width="90">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Condition}" Foreground="#B0BEC5"/>
@@ -578,7 +578,7 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="STATUS" Width="130">
+                    <GridViewColumn Header="STATUS" Width="110">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <Border CornerRadius="3" Padding="6,2">
@@ -592,7 +592,7 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="NOTE" Width="130">
+                    <GridViewColumn Header="NOTE" Width="110">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Note}" Foreground="#78909C" FontSize="12"/>
