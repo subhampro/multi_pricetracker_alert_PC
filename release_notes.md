@@ -1,13 +1,11 @@
-## v1.6.1 - Live Gold, Silver & Oil Prices Fixed
+## v1.6.2 - Correct Gold, Silver & Oil Sources
 
 ### 🐛 Fix
-- Gold (XAUUSD), Silver (XAGUSD) and Oil (USOIL) live prices now working correctly
-- Switched to TradingView Scanner API (same data source as TradingView charts)
-  - Gold → COMEX:GC1! futures
-  - Silver → COMEX:SI1! futures  
-  - Oil → NYMEX:CL1! WTI futures
-- Completely free, no API key required
-- Prices verified accurate against market data
+- Gold (XAUUSD) → **OANDA:XAUUSD** via TradingView Scanner (best source on TradingView)
+- Silver (XAGUSD) → **TVC:SILVER** via TradingView Scanner
+- Oil (USOIL) → **FX:USOIL** via TradingView Scanner (FOREX.com)
+- All 3 symbols confirmed returning correct live prices
+- No API key required
 
 ### 📦 Install
 Single `.exe` — no install needed.

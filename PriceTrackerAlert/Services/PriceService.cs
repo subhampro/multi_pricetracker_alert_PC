@@ -18,9 +18,9 @@ public class PriceService
     // TradingView scanner symbols — confirmed working with correct prices
     private static readonly Dictionary<string, string> TvSymbolMap = new()
     {
-        ["XAUUSD"] = "COMEX:GC1!",   // Gold futures - real-time spot equivalent
-        ["XAGUSD"] = "COMEX:SI1!",   // Silver futures
-        ["USOIL"]  = "NYMEX:CL1!",   // WTI Crude Oil futures
+        ["XAUUSD"] = "OANDA:XAUUSD",   // Gold — OANDA spot (best on TradingView)
+        ["XAGUSD"] = "TVC:SILVER",      // Silver — TVC commodity
+        ["USOIL"]  = "FX:USOIL",        // WTI Crude Oil — FX commodity
     };
 
     private readonly Dictionary<string, double> _testPrices = new()
