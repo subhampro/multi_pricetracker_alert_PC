@@ -8,10 +8,11 @@
     <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Version>1.5.1</Version>
-    <AssemblyVersion>1.5.1.0</AssemblyVersion>
-    <FileVersion>1.5.1.0</FileVersion>
-    <InformationalVersion>1.5.1</InformationalVersion>
+    <Version>1.5.2</Version>
+    <AssemblyVersion>1.5.2.0</AssemblyVersion>
+    <FileVersion>1.5.2.0</FileVersion>
+    <InformationalVersion>1.5.2</InformationalVersion>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <Product>Price Tracker Alert</Product>
     <Company>subhampro</Company>
     <Description>Live price alerts for crypto, gold and oil with popup and looping sound</Description>
