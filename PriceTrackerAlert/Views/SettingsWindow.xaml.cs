@@ -24,7 +24,6 @@ public partial class SettingsWindow : Window
         SoundCheck.IsChecked     = settings.SoundEnabled;
         TopCheck.IsChecked       = settings.PopupAlwaysOnTop;
         AutoStartCheck.IsChecked = settings.AutoStartWithWindows;
-        GoldKeyBox.Text          = settings.GoldApiKey;
         OilKeyBox.Text           = settings.OilApiKey;
 
         // Show friendly name for default, full path for custom
@@ -52,7 +51,6 @@ public partial class SettingsWindow : Window
         _settings.SoundEnabled         = SoundCheck.IsChecked == true;
         _settings.PopupAlwaysOnTop     = TopCheck.IsChecked == true;
         _settings.AutoStartWithWindows = AutoStartCheck.IsChecked == true;
-        _settings.GoldApiKey           = GoldKeyBox.Text.Trim();
         _settings.OilApiKey            = OilKeyBox.Text.Trim();
 
         // Save default token or validated custom path

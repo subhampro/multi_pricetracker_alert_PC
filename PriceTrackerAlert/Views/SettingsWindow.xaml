@@ -342,12 +342,8 @@
                 <TextBlock Text="🔑  API KEYS" Style="{StaticResource SectionHeader}"/>
                 <Border Background="#12121C" CornerRadius="8" Padding="16,14" Margin="0,0,0,2">
                     <StackPanel>
-                        <TextBlock Text="Metals-API Key" Foreground="White" FontSize="13" FontWeight="SemiBold" Margin="0,0,0,2"/>
-                        <TextBlock Text="For XAUUSD (Gold) and XAGUSD (Silver) — metals-api.com" Foreground="#546E7A" FontSize="11" Margin="0,0,0,6"/>
-                        <TextBox x:Name="GoldKeyBox" Margin="0,0,0,14"/>
-
                         <TextBlock Text="Alpha Vantage Key" Foreground="White" FontSize="13" FontWeight="SemiBold" Margin="0,0,0,2"/>
-                        <TextBlock Text="For USOIL (WTI Crude Oil) — alphavantage.co" Foreground="#546E7A" FontSize="11" Margin="0,0,0,6"/>
+                        <TextBlock Text="Optional — for USOIL fallback. Get free key at alphavantage.co" Foreground="#546E7A" FontSize="11" Margin="0,0,0,6"/>
                         <TextBox x:Name="OilKeyBox"/>
                     </StackPanel>
                 </Border>
@@ -358,8 +354,8 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="💡" FontSize="14" VerticalAlignment="Top" Margin="0,1,8,0"/>
                         <TextBlock Foreground="#4CAF50" FontSize="11" TextWrapping="Wrap">
-                            Crypto (BTC/ETH/BNB/SOL/XRP) works with no API key via Binance.
-                            Get free keys at metals-api.com and alphavantage.co
+                            All prices are now FREE with no API key needed!
+                            Crypto via Binance • Gold/Silver via Frankfurter.app • Oil via EIA.gov
                         </TextBlock>
                     </StackPanel>
                 </Border>

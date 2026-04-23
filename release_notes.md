@@ -1,11 +1,17 @@
-## v1.5.2 - Auto-Update Fix
+## v1.6.0 - All Free APIs, No Keys Needed
 
-### Fixes
-- Fixed auto-update version detection — now reads correct version from exe file properties
-- Version now shown in bottom status bar (e.g. "v1.5.2") so you always know what's running
-- Startup update check reduced from 3s to 1s delay
-- Source dropdown hidden for USOIL, XAUUSD, XAGUSD (Binance only)
+### 🆓 Breaking Change — No More Paid APIs
+- **Gold (XAUUSD) & Silver (XAGUSD)**: Switched from metals-api.com (no longer free) to **Frankfurter.app** — completely free, no account, no API key
+- **Oil (USOIL)**: Switched from Alpha Vantage to **EIA.gov** (US Energy Information Administration) — completely free, no account, no API key
+- **Crypto**: Binance — always free, no key
 
-### Install
-Single `.exe` — no install needed.
-If you have v1.5.0 or v1.5.1, download this version manually once — after that all future updates will happen automatically inside the app.
+### ✨ All symbols now work out of the box with zero configuration
+
+### 🧹 Cleanup
+- Removed Gold API key field from Settings
+- Updated README to reflect all-free data sources
+- Settings info tip updated
+
+### 📦 Install
+Single `.exe` — no install, no .NET required.
+If you have v1.5.2+, the app will show the update button automatically.

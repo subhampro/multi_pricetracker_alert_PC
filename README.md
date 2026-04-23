@@ -5,6 +5,7 @@ A Windows desktop app that monitors live prices for crypto, gold, and oil — an
 ![Platform](https://img.shields.io/badge/platform-Windows-blue)
 ![.NET](https://img.shields.io/badge/.NET-8.0-purple)
 ![License](https://img.shields.io/badge/license-MIT-green)
+![Version](https://img.shields.io/badge/version-1.6.0-brightgreen)
 
 ---
 
@@ -13,28 +14,32 @@ A Windows desktop app that monitors live prices for crypto, gold, and oil — an
 | Feature | Details |
 |---|---|
 | 🔔 Price Alerts | Set Above / Below triggers for any symbol |
-| 📊 Live Prices | Real-time polling via Binance, Metals-API, Alpha Vantage |
+| 📊 Live Prices | Real-time polling — updates every second |
 | 🔊 Looping Sound | Alert sound loops until you acknowledge |
 | 🪟 Popup Window | Big visible popup with Acknowledge + Snooze 5 min |
 | 💾 Persistent Storage | SQLite — alerts survive app restarts |
 | 🖥 System Tray | Minimize to tray, runs silently in background |
-| ⚙ Settings | Interval, volume, sound file, auto-start, API keys |
+| ⚙ Settings | Interval, volume, sound file, auto-start |
 | 🧪 Test Mode | Simulate alerts without live API |
+| 🔄 Auto-Update | Checks GitHub for updates, installs with one click |
+| 📺 TradingView Mode | BTCUSDT with TradingView price offset |
 
 ---
 
 ## 📦 Supported Symbols
 
-| Symbol | Market | API Used |
-|---|---|---|
-| `BTCUSDT` | Bitcoin / USD | Binance (free, no key) |
-| `ETHUSDT` | Ethereum / USD | Binance (free, no key) |
-| `BNBUSDT` | BNB / USD | Binance (free, no key) |
-| `SOLUSDT` | Solana / USD | Binance (free, no key) |
-| `XRPUSDT` | XRP / USD | Binance (free, no key) |
-| `XAUUSD` | Gold / USD | [metals-api.com](https://metals-api.com) (free tier) |
-| `XAGUSD` | Silver / USD | [metals-api.com](https://metals-api.com) (free tier) |
-| `USOIL` | WTI Crude Oil | [alphavantage.co](https://www.alphavantage.co) (free tier) |
+| Symbol | Market | API Used | Key Required |
+|---|---|---|---|
+| `BTCUSDT` | Bitcoin / USD | Binance | ❌ Free |
+| `ETHUSDT` | Ethereum / USD | Binance | ❌ Free |
+| `BNBUSDT` | BNB / USD | Binance | ❌ Free |
+| `SOLUSDT` | Solana / USD | Binance | ❌ Free |
+| `XRPUSDT` | XRP / USD | Binance | ❌ Free |
+| `XAUUSD` | Gold / USD | [Frankfurter.app](https://frankfurter.app) | ❌ Free |
+| `XAGUSD` | Silver / USD | [Frankfurter.app](https://frankfurter.app) | ❌ Free |
+| `USOIL` | WTI Crude Oil | [EIA.gov](https://www.eia.gov/opendata/) | ❌ Free |
+
+> **All APIs are completely free — no account or API key required.**
 
 ---
 
@@ -43,33 +48,23 @@ A Windows desktop app that monitors live prices for crypto, gold, and oil — an
 ### Option A — Download Release (recommended)
 1. Go to [Releases](../../releases) and download `PriceTrackerAlert.exe`
 2. Run it — no install needed, single `.exe`
+3. Future updates happen automatically inside the app
 
 ### Option B — Build from source
 ```
 Requirements: .NET 8 SDK  →  https://dotnet.microsoft.com/download/dotnet/8.0
 ```
 ```bash
-git clone https://github.com/YOUR_USERNAME/multi_pricetracker_alert_PC.git
-cd multi_pricetracker_alert_PC/PriceTrackerAlert
-dotnet restore --source https://api.nuget.org/v3/index.json
-dotnet build
-dotnet run
+git clone https://github.com/subhampro/multi_pricetracker_alert_PC.git
+cd multi_pricetracker_alert_PC
+
+# Generate assets (icon + sound)
+dotnet run --project GenWav/GenWav.csproj
+
+# Build and run
+cd PriceTrackerAlert
+dotnet run --source https://api.nuget.org/v3/index.json
 ```
-
----
-
-## ⚙ API Keys Setup
-
-Crypto (Binance) works with **no API key**.
-
-For Gold and Oil, get free keys:
-
-| Provider | Sign up | Used for |
-|---|---|---|
-| [metals-api.com](https://metals-api.com/register) | Free tier: 50 req/month | XAUUSD, XAGUSD |
-| [alphavantage.co](https://www.alphavantage.co/support/#api-key) | Free: 25 req/day | USOIL / WTI |
-
-Then open **⚙ Settings** in the app and paste your keys.
 
 ---
 
@@ -83,7 +78,12 @@ Default test prices:
 - `XAUUSD` = 2,400
 - `USOIL` = 85
 
-Add an alert below those values to immediately trigger a popup and hear the sound.
+---
+
+## 📺 TradingView Mode
+
+For `BTCUSDT`, you can select **TradingView** as the source in the Source dropdown.
+This fetches the Binance price and applies an offset to match TradingView's displayed price.
 
 ---
 
@@ -92,7 +92,7 @@ Add an alert below those values to immediately trigger a popup and hear the soun
 ```
 PriceTrackerAlert/
 ├── Models/
-│   ├── Alert.cs            # Alert rule model + AlertCondition enum
+│   ├── Alert.cs            # Alert rule model + AlertCondition/PriceSource enums
 │   └── AppSettings.cs      # Settings model
 ├── ViewModels/
 │   ├── MainViewModel.cs    # Main dashboard logic
@@ -103,15 +103,17 @@ PriceTrackerAlert/
 │   ├── AlertPopupWindow.xaml  # Popup alert window
 │   └── SettingsWindow.xaml    # Settings dialog
 ├── Services/
-│   ├── PriceService.cs     # Binance / Metals-API / Alpha Vantage
+│   ├── PriceService.cs     # Binance / Frankfurter / EIA
 │   ├── AlertEngine.cs      # Background polling + trigger detection
 │   ├── StorageService.cs   # SQLite persistence
 │   ├── AudioService.cs     # NAudio looping playback
-│   └── AutoStartService.cs # Windows registry autostart
+│   ├── AutoStartService.cs # Windows registry autostart
+│   └── UpdateService.cs    # GitHub auto-update
 ├── Converters/
 │   └── Converters.cs       # WPF value converters
 └── Assets/
-    ├── alert.wav           # Default alert sound (880Hz sine)
+    ├── alert.mp3           # Default alert sound
+    ├── alert.wav           # Fallback alert sound
     └── icon.ico            # App icon
 ```
 
@@ -121,8 +123,8 @@ PriceTrackerAlert/
 
 ## 📋 Alert Logic
 
-- Each alert has: **Symbol**, **Target Price**, **Condition** (Above/Below), **Note**
-- The engine polls every N seconds (configurable)
+- Each alert has: **Symbol**, **Target Price**, **Condition** (Above/Below), **Source**, **Note**
+- The engine polls every N seconds (configurable, default 1s)
 - When `price >= target` (Above) or `price <= target` (Below) → alert fires **once**
 - After acknowledging, click 🔄 Reset to re-arm the alert
 - Snooze re-arms automatically after 5 minutes
@@ -137,11 +139,12 @@ dotnet publish PriceTrackerAlert/PriceTrackerAlert.csproj \
   --self-contained true \
   -p:PublishSingleFile=true \
   -p:IncludeNativeLibrariesForSelfExtract=true \
+  -p:DebugType=none \
   -o ./publish \
   --source https://api.nuget.org/v3/index.json
 ```
 
-Output: `publish/PriceTrackerAlert.exe` — single file, no .NET install required on target machine.
+Output: `publish/PriceTrackerAlert.exe` — single file, no .NET install required.
 
 ---
 
