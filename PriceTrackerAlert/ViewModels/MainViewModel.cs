@@ -13,13 +13,19 @@ public class MainViewModel : INotifyPropertyChanged
     private readonly PriceService   _prices;
     private readonly AlertEngine    _engine;
     private readonly AudioService   _audio;
+    private readonly UpdateService  _updater;
 
-    private string _statusText = "Ready";
-    private string _newSymbol  = "BTCUSDT";
-    private double _newTarget  = 100000;
+    private string _statusText    = "Ready";
+    private string _newSymbol     = "BTCUSDT";
+    private double _newTarget     = 100000;
     private AlertCondition _newCondition = AlertCondition.Above;
     private PriceSource    _newSource    = PriceSource.Binance;
-    private string _newNote = "";
+    private string _newNote       = "";
+    private bool   _updateAvailable = false;
+    private string _updateVersion   = "";
+    private string _updateUrl       = "";
+    private bool   _isUpdating      = false;
+    private int    _updateProgress  = 0;
 
     public ObservableCollection<AlertItem> Alerts { get; } = [];
     public AppSettings Settings { get; private set; }
@@ -80,25 +86,59 @@ public class MainViewModel : INotifyPropertyChanged
         set { _prices.TestMode = value; OnPropertyChanged(); StatusText = value ? "⚠ TEST MODE" : "Ready"; }
     }
 
-    public RelayCommand AddAlertCommand    { get; }
+    public bool UpdateAvailable
+    {
+        get => _updateAvailable;
+        set { _updateAvailable = value; OnPropertyChanged(); }
+    }
+
+    public string UpdateVersion
+    {
+        get => _updateVersion;
+        set { _updateVersion = value; OnPropertyChanged(); }
+    }
+
+    public bool IsUpdating
+    {
+        get => _isUpdating;
+        set { _isUpdating = value; OnPropertyChanged(); }
+    }
+
+    public int UpdateProgress
+    {
+        get => _updateProgress;
+        set { _updateProgress = value; OnPropertyChanged(); }
+    }
+
+    public RelayCommand AddAlertCommand     { get; }
     public RelayCommand<AlertItem> DeleteAlertCommand  { get; }
     public RelayCommand<AlertItem> ToggleAlertCommand  { get; }
     public RelayCommand<AlertItem> ResetAlertCommand   { get; }
     public RelayCommand OpenSettingsCommand { get; }
+    public RelayCommand DoUpdateCommand     { get; }
 
-    public MainViewModel(StorageService storage, PriceService prices, AlertEngine engine, AudioService audio)
+    public MainViewModel(StorageService storage, PriceService prices, AlertEngine engine, AudioService audio, UpdateService updater)
     {
-        _storage = storage;
-        _prices  = prices;
-        _engine  = engine;
-        _audio   = audio;
-        Settings = _storage.LoadSettings();
+        _storage  = storage;
+        _prices   = prices;
+        _engine   = engine;
+        _audio    = audio;
+        _updater  = updater;
+        Settings  = _storage.LoadSettings();
 
-        AddAlertCommand    = new RelayCommand(AddAlert);
-        DeleteAlertCommand = new RelayCommand<AlertItem>(DeleteAlert);
-        ToggleAlertCommand = new RelayCommand<AlertItem>(ToggleAlert);
-        ResetAlertCommand  = new RelayCommand<AlertItem>(ResetAlert);
+        AddAlertCommand     = new RelayCommand(AddAlert);
+        DeleteAlertCommand  = new RelayCommand<AlertItem>(DeleteAlert);
+        ToggleAlertCommand  = new RelayCommand<AlertItem>(ToggleAlert);
+        ResetAlertCommand   = new RelayCommand<AlertItem>(ResetAlert);
         OpenSettingsCommand = new RelayCommand(OpenSettings);
+        DoUpdateCommand     = new RelayCommand(DoUpdate);
+
+        _updater.UpdateAvailable += (ver, url) => Application.Current.Dispatcher.Invoke(() =>
+        {
+            _updateUrl      = url;
+            UpdateVersion   = ver;
+            UpdateAvailable = true;
+        });
 
         _engine.AlertTriggered += OnAlertTriggered;
         _engine.PriceUpdated   += OnPriceUpdated;
@@ -107,6 +147,18 @@ public class MainViewModel : INotifyPropertyChanged
         LoadAlerts();
         ApplySettings();
         _engine.Start(Settings.CheckIntervalSeconds);
+
+        // Check for updates on startup then every 30 min
+        _ = Task.Run(async () =>
+        {
+            await Task.Delay(3000); // wait 3s after startup
+            await _updater.CheckAsync();
+            while (true)
+            {
+                await Task.Delay(TimeSpan.FromMinutes(30));
+                await _updater.CheckAsync();
+            }
+        });
     }
 
     private void LoadAlerts()
@@ -206,6 +258,28 @@ public class MainViewModel : INotifyPropertyChanged
         _prices.Configure(Settings.GoldApiKey, Settings.OilApiKey);
         _engine.Start(Settings.CheckIntervalSeconds);
         AutoStartService.Set(Settings.AutoStartWithWindows);
+    }
+
+    private async void DoUpdate()
+    {
+        if (string.IsNullOrEmpty(_updateUrl)) return;
+        IsUpdating      = true;
+        UpdateAvailable = false;
+        StatusText      = "Downloading update...";
+        try
+        {
+            await _updater.DownloadAndInstallAsync(_updateUrl, p =>
+            {
+                UpdateProgress = p;
+                StatusText     = $"Downloading update... {p}%";
+            });
+        }
+        catch (Exception ex)
+        {
+            IsUpdating = false;
+            StatusText = $"Update failed: {ex.Message}";
+            UpdateAvailable = true;
+        }
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

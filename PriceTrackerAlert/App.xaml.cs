@@ -15,7 +15,8 @@ public partial class App : Application
         var prices  = new PriceService();
         var audio   = new AudioService();
         var engine  = new AlertEngine(prices, storage);
-        var vm      = new MainViewModel(storage, prices, engine, audio);
+        var updater = new UpdateService();
+        var vm      = new MainViewModel(storage, prices, engine, audio, updater);
 
         var window = new MainWindow(vm);
         window.Show();
