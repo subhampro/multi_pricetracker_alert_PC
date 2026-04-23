@@ -21,15 +21,15 @@ public partial class MainWindow : Window
         {
             IconSource = new System.Windows.Media.Imaging.BitmapImage(
                 new Uri("pack://application:,,,/Assets/icon.ico")),
-            ToolTipText = "Price Tracker Alert"
+            ToolTipText = "Price Tracker Alert — Running"
         };
         _trayIcon.TrayMouseDoubleClick += (_, _) => ShowWindow();
 
         var menu = new ContextMenu();
-        var openItem = new MenuItem { Header = "Open" };
+        var openItem = new MenuItem { Header = "📈  Open Price Tracker" };
         openItem.Click += (_, _) => ShowWindow();
-        var exitItem = new MenuItem { Header = "Exit" };
-        exitItem.Click += (_, _) => { _forceClose = true; _trayIcon.Dispose(); Application.Current.Shutdown(); };
+        var exitItem = new MenuItem { Header = "✖  Exit" };
+        exitItem.Click += (_, _) => ForceExit();
         menu.Items.Add(openItem);
         menu.Items.Add(new Separator());
         menu.Items.Add(exitItem);
@@ -54,21 +54,24 @@ public partial class MainWindow : Window
             _vm.DeleteAlertCommand.Execute(item);
     }
 
+    // Minimize button → hide to tray silently
     private void Window_StateChanged(object sender, EventArgs e)
     {
         if (WindowState == WindowState.Minimized)
-        {
             Hide();
-            _trayIcon.ShowBalloonTip("Price Tracker Alert", "Running in background", BalloonIcon.Info);
-        }
     }
 
+    // X button → hide to tray (keep running in background)
     private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
     {
         if (!_forceClose)
         {
             e.Cancel = true;
             Hide();
+            _trayIcon.ShowBalloonTip(
+                "Still Running",
+                "Price Tracker Alert is monitoring prices in the background.\nRight-click the tray icon to exit.",
+                BalloonIcon.Info);
         }
         else
         {
@@ -81,5 +84,13 @@ public partial class MainWindow : Window
         Show();
         WindowState = WindowState.Normal;
         Activate();
+        Focus();
+    }
+
+    private void ForceExit()
+    {
+        _forceClose = true;
+        _trayIcon.Dispose();
+        Application.Current.Shutdown();
     }
 }

@@ -16,6 +16,66 @@
         <conv:ConditionIndexConverter   x:Key="ConditionIdx"/>
         <conv:PriceSourceToStringConverter x:Key="SourceToString"/>
 
+        <!-- Slim dark ScrollBar -->
+        <Style x:Key="SlimScrollThumb" TargetType="Thumb">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Thumb">
+                        <Border x:Name="Bd" Background="#3D3D5F" CornerRadius="3" Margin="2,3"/>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#4CAF50"/>
+                            </Trigger>
+                            <Trigger Property="IsDragging" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#66BB6A"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SlimScrollBar" TargetType="ScrollBar">
+            <Setter Property="Width" Value="6"/>
+            <Setter Property="MinWidth" Value="6"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollBar">
+                        <Border Background="#1A1A2E" CornerRadius="3" Width="6">
+                            <Track x:Name="PART_Track" IsDirectionReversed="True">
+                                <Track.Thumb>
+                                    <Thumb Style="{StaticResource SlimScrollThumb}"/>
+                                </Track.Thumb>
+                            </Track>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SlimScrollViewer" TargetType="ScrollViewer">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollViewer">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="8"/>
+                            </Grid.ColumnDefinitions>
+                            <ScrollContentPresenter Grid.Column="0"/>
+                            <ScrollBar Grid.Column="1" x:Name="PART_VerticalScrollBar"
+                                       Style="{StaticResource SlimScrollBar}"
+                                       Value="{TemplateBinding VerticalOffset}"
+                                       Maximum="{TemplateBinding ScrollableHeight}"
+                                       ViewportSize="{TemplateBinding ViewportHeight}"
+                                       Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <!-- Dark ComboBox ControlTemplate -->
         <ControlTemplate x:Key="DarkComboBoxToggle" TargetType="ToggleButton">
             <Border Background="#2D2D3F" BorderBrush="#555" BorderThickness="1" CornerRadius="3">
@@ -69,11 +129,14 @@
                             <Popup x:Name="PART_Popup"
                                    IsOpen="{TemplateBinding IsDropDownOpen}"
                                    AllowsTransparency="True" Focusable="False"
-                                   PopupAnimation="Slide" Placement="Bottom">
-                                <Border Background="#2D2D3F" BorderBrush="#555" BorderThickness="1"
-                                        MaxHeight="200" MinWidth="{TemplateBinding ActualWidth}">
-                                    <ScrollViewer>
-                                        <ItemsPresenter/>
+                                   PopupAnimation="Fade" Placement="Bottom">
+                                <Border Background="#2D2D3F" BorderBrush="#3D3D5F" BorderThickness="1"
+                                        CornerRadius="6" MaxHeight="220" MinWidth="{TemplateBinding ActualWidth}">
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="Black" BlurRadius="12" Opacity="0.5" ShadowDepth="4"/>
+                                    </Border.Effect>
+                                    <ScrollViewer Style="{StaticResource SlimScrollViewer}">
+                                        <ItemsPresenter Margin="0,4"/>
                                     </ScrollViewer>
                                 </Border>
                             </Popup>
@@ -396,7 +459,22 @@
                   ItemsSource="{Binding Alerts}"
                   Background="#12121C" BorderThickness="0"
                   Foreground="White" Margin="0,0,0,0"
-                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                  ScrollViewer.VerticalScrollBarVisibility="Auto">
+            <ListView.Template>
+                <ControlTemplate TargetType="ListView">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="8"/>
+                        </Grid.ColumnDefinitions>
+                        <ScrollViewer Grid.ColumnSpan="2" Style="{StaticResource SlimScrollViewer}"
+                                      Focusable="False">
+                            <ItemsPresenter/>
+                        </ScrollViewer>
+                    </Grid>
+                </ControlTemplate>
+            </ListView.Template>
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="SYMBOL" Width="95">

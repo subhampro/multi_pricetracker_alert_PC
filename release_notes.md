@@ -1,11 +1,12 @@
-## v1.6.2 - Correct Gold, Silver & Oil Sources
+## v1.6.3 - Tray & Single Instance Fix
 
-### 🐛 Fix
-- Gold (XAUUSD) → **OANDA:XAUUSD** via TradingView Scanner (best source on TradingView)
-- Silver (XAGUSD) → **TVC:SILVER** via TradingView Scanner
-- Oil (USOIL) → **FX:USOIL** via TradingView Scanner (FOREX.com)
-- All 3 symbols confirmed returning correct live prices
-- No API key required
+### 🐛 Fixes
+- **X button** → hides to system tray (keeps monitoring in background)
+- **Minimize** → hides to system tray silently
+- **Tray double-click** → brings existing window to front (no longer opens a second instance)
+- **Double-clicking the .exe** when already running → brings existing window to front instead of launching a second copy
+- **Tray right-click → Exit** → fully closes the app and releases the file (can now delete/replace the exe)
+- Slim dark scrollbar on alert list and symbol dropdown (no more ugly Windows scrollbar)
 
 ### 📦 Install
 Single `.exe` — no install needed.
