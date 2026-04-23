@@ -49,3 +49,23 @@ public class PriceSourceToStringConverter : IValueConverter
         v is PriceSource.TradingView ? "📺 TradingView" : "🔶 Binance";
     public object ConvertBack(object v, Type t, object p, CultureInfo c) => throw new NotImplementedException();
 }
+
+// Returns the brand color for a symbol string
+public class SymbolColorConverter : IValueConverter
+{
+    public object Convert(object v, Type t, object p, CultureInfo c)
+    {
+        var color = PriceTrackerAlert.ViewModels.SymbolIcons.GetColor(v?.ToString() ?? "");
+        return new System.Windows.Media.SolidColorBrush(
+            (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(color));
+    }
+    public object ConvertBack(object v, Type t, object p, CultureInfo c) => throw new NotImplementedException();
+}
+
+// Returns the icon letter/symbol for a symbol string
+public class SymbolIconConverter : IValueConverter
+{
+    public object Convert(object v, Type t, object p, CultureInfo c) =>
+        PriceTrackerAlert.ViewModels.SymbolIcons.GetIcon(v?.ToString() ?? "");
+    public object ConvertBack(object v, Type t, object p, CultureInfo c) => throw new NotImplementedException();
+}

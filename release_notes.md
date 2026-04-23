@@ -1,12 +1,21 @@
-## v1.6.3 - Tray & Single Instance Fix
+## v1.6.4 - Symbol Icons + Tray Fix
 
-### 🐛 Fixes
-- **X button** → hides to system tray (keeps monitoring in background)
-- **Minimize** → hides to system tray silently
-- **Tray double-click** → brings existing window to front (no longer opens a second instance)
-- **Double-clicking the .exe** when already running → brings existing window to front instead of launching a second copy
-- **Tray right-click → Exit** → fully closes the app and releases the file (can now delete/replace the exe)
-- Slim dark scrollbar on alert list and symbol dropdown (no more ugly Windows scrollbar)
+### ✨ Symbol Icons
+- Colored circle icons now show before every symbol — matching TradingView's brand colors
+  - ₿ Bitcoin → orange #F7931A
+  - Ξ Ethereum → purple-blue #627EEA
+  - B BNB → yellow #F3BA2F
+  - ◎ Solana → purple #9945FF
+  - ✕ XRP → blue #346AA9
+  - Au Gold → gold #D4AF37
+  - Ag Silver → silver #A8A9AD
+  - 🛢 Oil → dark green
+- Icons appear in both the symbol dropdown and the alert list
+
+### 🐛 Tray Fixes
+- X button hides to tray (keeps monitoring), minimize hides to tray
+- Double-clicking exe when already running brings existing window (single instance)
+- Tray right-click → Exit fully closes app so exe can be deleted
 
 ### 📦 Install
 Single `.exe` — no install needed.

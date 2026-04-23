@@ -22,6 +22,8 @@ public class AlertItem : INotifyPropertyChanged
 
     public int    Id          => Model.Id;
     public string Symbol      => Model.Symbol;
+    public string SymbolIcon  => SymbolIcons.GetIcon(Model.Symbol);
+    public string SymbolColor => SymbolIcons.GetColor(Model.Symbol);
     public double TargetPrice => Model.TargetPrice;
     public string Condition   => Model.Condition == AlertCondition.Above ? "▲ Above" : "▼ Below";
     public string Note        => Model.Note;

@@ -15,6 +15,8 @@
         <conv:InverseBoolConverter      x:Key="InvBool"/>
         <conv:ConditionIndexConverter   x:Key="ConditionIdx"/>
         <conv:PriceSourceToStringConverter x:Key="SourceToString"/>
+        <conv:SymbolColorConverter      x:Key="SymbolColor"/>
+        <conv:SymbolIconConverter       x:Key="SymbolIcon"/>
 
         <!-- Slim dark ScrollBar -->
         <Style x:Key="SlimScrollThumb" TargetType="Thumb">
@@ -155,12 +157,23 @@
                     <Style TargetType="ComboBoxItem">
                         <Setter Property="Foreground" Value="White"/>
                         <Setter Property="Background" Value="#2D2D3F"/>
-                        <Setter Property="Padding" Value="10,6"/>
+                        <Setter Property="Padding" Value="6,6"/>
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="ComboBoxItem">
-                                    <Border x:Name="Bd" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
-                                        <ContentPresenter/>
+                                    <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                            Padding="{TemplateBinding Padding}" CornerRadius="4" Margin="4,1">
+                                        <StackPanel Orientation="Horizontal">
+                                            <!-- Colored circle icon -->
+                                            <Border Width="22" Height="22" CornerRadius="11"
+                                                    Background="{Binding Content, RelativeSource={RelativeSource AncestorType=ContentPresenter}, Converter={StaticResource SymbolColor}}"
+                                                    Margin="0,0,8,0" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Content, RelativeSource={RelativeSource AncestorType=ContentPresenter}, Converter={StaticResource SymbolIcon}}"
+                                                           Foreground="White" FontSize="9" FontWeight="Bold"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ContentPresenter VerticalAlignment="Center"/>
+                                        </StackPanel>
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsHighlighted" Value="True">
@@ -477,10 +490,20 @@
             </ListView.Template>
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="SYMBOL" Width="95">
+                    <GridViewColumn Header="SYMBOL" Width="120">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Symbol}" Foreground="White" FontWeight="SemiBold"/>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <Border Width="24" Height="24" CornerRadius="12"
+                                            Background="{Binding Symbol, Converter={StaticResource SymbolColor}}"
+                                            Margin="0,0,8,0" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Symbol, Converter={StaticResource SymbolIcon}}"
+                                                   Foreground="White" FontSize="9" FontWeight="Bold"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <TextBlock Text="{Binding Symbol}" Foreground="White"
+                                               FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
