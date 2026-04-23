@@ -1,11 +1,9 @@
-## v1.6.8 - Settings Redesign
+## v1.6.9 - Delete Button Fix
 
-### ✨ Settings Overhaul
-- Removed API Keys section entirely — all data sources are free with no key needed
-- New clean modern UI with toggle switches for checkboxes
-- DATA SOURCES section shows all 3 sources with green "Free" badges
-- Sections: POLLING / SOUND / BEHAVIOUR / DATA SOURCES
-- Removed GoldApiKey and OilApiKey from app settings
+### Fixes
+- Delete button (trash icon) restored on alert rows — was corrupted by emoji encoding issue
+- Reset and Pause/Play buttons also fixed
+- Status bar text fixed
 
 ### 📦 Install
 Single `.exe` — no install needed.
