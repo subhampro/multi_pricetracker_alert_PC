@@ -46,6 +46,6 @@ public class ConditionIndexConverter : IValueConverter
 public class PriceSourceToStringConverter : IValueConverter
 {
     public object Convert(object v, Type t, object p, CultureInfo c) =>
-        v is PriceSource.TradingView ? "📺 TradingView (+$18)" : "🔶 Binance";
+        v is PriceSource.TradingView ? "📺 TradingView" : "🔶 Binance";
     public object ConvertBack(object v, Type t, object p, CultureInfo c) => throw new NotImplementedException();
 }

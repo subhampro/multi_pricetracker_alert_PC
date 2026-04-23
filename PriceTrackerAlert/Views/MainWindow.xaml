@@ -268,7 +268,6 @@
                               Text="{Binding NewSymbol, UpdateSourceTrigger=PropertyChanged}"
                               IsEditable="True">
                         <ComboBoxItem>BTCUSDT</ComboBoxItem>
-                        <ComboBoxItem>BTCUSD</ComboBoxItem>
                         <ComboBoxItem>ETHUSDT</ComboBoxItem>
                         <ComboBoxItem>BNBUSDT</ComboBoxItem>
                         <ComboBoxItem>SOLUSDT</ComboBoxItem>
@@ -370,7 +369,7 @@
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Foreground" Value="#FFD54F"/>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding SourceBadge}" Value="📺 TV +$18">
+                                                <DataTrigger Binding="{Binding SourceBadge}" Value="📺 TradingView">
                                                     <Setter Property="Foreground" Value="#29B6F6"/>
                                                 </DataTrigger>
                                             </Style.Triggers>

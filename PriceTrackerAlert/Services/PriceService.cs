@@ -11,17 +11,15 @@ public class PriceService
     private string _oilApiKey  = "";
 
     // TradingView offset per symbol: TV_price = Binance_price + offset
-    // BTCUSD on TradingView is ~$18 higher than Binance BTCUSDT
-    // Add more symbols here as needed
+    // Key is the SAME symbol user selects — no separate pair needed
     public static readonly Dictionary<string, (string BinanceSymbol, double Offset)> TradingViewMap = new()
     {
-        ["BTCUSD"] = ("BTCUSDT", +18.0),
+        ["BTCUSDT"] = ("BTCUSDT", +18.0),
     };
 
     private readonly Dictionary<string, double> _testPrices = new()
     {
         ["BTCUSDT"] = 100000,
-        ["BTCUSD"]  = 100018,
         ["ETHUSDT"] = 3500,
         ["XAUUSD"]  = 2400,
         ["USOIL"]   = 85
