@@ -1,10 +1,11 @@
-## v1.6.6 - Icon Fixes
+## v1.6.7 - Symbol Icons Fixed
 
-### 🐛 Fixes
-- Symbol icons now load correctly from TradingView CDN (was showing "S" fallback)
-- Source dropdown (Binance/TradingView) no longer shows round icon — text only
-- Condition dropdown (Above/Below) no longer shows round icon — text only
-- Settings footer version corrected to v1.6.6
+### 🐛 Root Cause Fixed
+- Symbol dropdown was showing "PriceTrackerAlert.ViewModels.MainViewModel" text and "P" icon
+- Root cause: ComboBox used hardcoded ComboBoxItem elements, so {Binding} resolved to MainViewModel instead of the symbol string
+- Fix: Symbol list now bound to AvailableSymbols collection — {Binding} correctly gets "BTCUSDT", "XAUUSD" etc.
+- TradingView SVG icons now load correctly for all symbols
+- Colored circle background kept behind SVG (TradingView icons have transparent backgrounds)
 
 ### 📦 Install
 Single `.exe` — no install needed.

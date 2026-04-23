@@ -53,9 +53,9 @@ public partial class SymbolIconControl : UserControl
             {
                 var img = new DrawingImage(drawing);
                 img.Freeze();
-                SvgImage.Source  = img;
-                FallbackText.Text = "";   // hide fallback once SVG loaded
-                BgCircle.Fill    = Brushes.Transparent;
+                SvgImage.Source   = img;
+                FallbackText.Text = "";  // hide letter fallback
+                // Keep BgCircle colored — TradingView icons have transparent bg
             }
             catch { }
         });

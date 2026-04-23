@@ -381,17 +381,9 @@
                     <TextBlock Text="SYMBOL" Foreground="#546E7A" FontSize="10" FontWeight="Bold"
                                Margin="0,0,0,5"/>
                     <ComboBox Style="{StaticResource DarkComboBox}"
+                              ItemsSource="{Binding AvailableSymbols}"
                               Text="{Binding NewSymbol, UpdateSourceTrigger=PropertyChanged}"
-                              IsEditable="True">
-                        <ComboBoxItem>BTCUSDT</ComboBoxItem>
-                        <ComboBoxItem>ETHUSDT</ComboBoxItem>
-                        <ComboBoxItem>BNBUSDT</ComboBoxItem>
-                        <ComboBoxItem>SOLUSDT</ComboBoxItem>
-                        <ComboBoxItem>XRPUSDT</ComboBoxItem>
-                        <ComboBoxItem>XAUUSD</ComboBoxItem>
-                        <ComboBoxItem>XAGUSD</ComboBoxItem>
-                        <ComboBoxItem>USOIL</ComboBoxItem>
-                    </ComboBox>
+                              IsEditable="True"/>
                 </StackPanel>
 
                 <!-- Source - only shown for symbols with multiple sources (e.g. BTCUSDT) -->

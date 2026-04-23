@@ -75,6 +75,11 @@ public class MainViewModel : INotifyPropertyChanged
         set { _newSource = value; OnPropertyChanged(); }
     }
 
+    public List<string> AvailableSymbols { get; } = new()
+    {
+        "BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "XAUUSD", "XAGUSD", "USOIL"
+    };
+
     // Available sources for the symbol currently selected
     public List<PriceSource> AvailableSources =>
         PriceService.TradingViewMap.ContainsKey(_newSymbol.ToUpper())
