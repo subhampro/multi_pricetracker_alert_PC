@@ -1,17 +1,14 @@
-## v1.6.0 - All Free APIs, No Keys Needed
+## v1.6.1 - Live Gold, Silver & Oil Prices Fixed
 
-### 🆓 Breaking Change — No More Paid APIs
-- **Gold (XAUUSD) & Silver (XAGUSD)**: Switched from metals-api.com (no longer free) to **Frankfurter.app** — completely free, no account, no API key
-- **Oil (USOIL)**: Switched from Alpha Vantage to **EIA.gov** (US Energy Information Administration) — completely free, no account, no API key
-- **Crypto**: Binance — always free, no key
-
-### ✨ All symbols now work out of the box with zero configuration
-
-### 🧹 Cleanup
-- Removed Gold API key field from Settings
-- Updated README to reflect all-free data sources
-- Settings info tip updated
+### 🐛 Fix
+- Gold (XAUUSD), Silver (XAGUSD) and Oil (USOIL) live prices now working correctly
+- Switched to TradingView Scanner API (same data source as TradingView charts)
+  - Gold → COMEX:GC1! futures
+  - Silver → COMEX:SI1! futures  
+  - Oil → NYMEX:CL1! WTI futures
+- Completely free, no API key required
+- Prices verified accurate against market data
 
 ### 📦 Install
-Single `.exe` — no install, no .NET required.
+Single `.exe` — no install needed.
 If you have v1.5.2+, the app will show the update button automatically.

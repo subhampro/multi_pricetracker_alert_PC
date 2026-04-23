@@ -1,17 +1,26 @@
 using PriceTrackerAlert.Models;
 using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 
 namespace PriceTrackerAlert.Services;
 
 public class PriceService
 {
-    private readonly HttpClient _http = new() { Timeout = TimeSpan.FromSeconds(10) };
+    private readonly HttpClient _http;
 
     // TradingView offset per symbol: TV_price = Binance_price + offset
     public static readonly Dictionary<string, (string BinanceSymbol, double Offset)> TradingViewMap = new()
     {
         ["BTCUSDT"] = ("BTCUSDT", +18.0),
+    };
+
+    // TradingView scanner symbols — confirmed working with correct prices
+    private static readonly Dictionary<string, string> TvSymbolMap = new()
+    {
+        ["XAUUSD"] = "COMEX:GC1!",   // Gold futures - real-time spot equivalent
+        ["XAGUSD"] = "COMEX:SI1!",   // Silver futures
+        ["USOIL"]  = "NYMEX:CL1!",   // WTI Crude Oil futures
     };
 
     private readonly Dictionary<string, double> _testPrices = new()
@@ -25,7 +34,15 @@ public class PriceService
 
     public bool TestMode { get; set; } = false;
 
-    // No longer needed — kept for backward compat with AppSettings
+    public PriceService()
+    {
+        _http = new HttpClient { Timeout = TimeSpan.FromSeconds(10) };
+        _http.DefaultRequestHeaders.Add("User-Agent",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0 Safari/537.36");
+        _http.DefaultRequestHeaders.Add("Origin", "https://www.tradingview.com");
+        _http.DefaultRequestHeaders.Add("Referer", "https://www.tradingview.com/");
+    }
+
     public void Configure(string goldApiKey, string oilApiKey) { }
 
     public async Task<(double price, string error)> GetPriceAsync(string symbol, PriceSource source = PriceSource.Binance)
@@ -46,10 +63,8 @@ public class PriceService
             {
                 "BTCUSDT" or "ETHUSDT" or "BNBUSDT" or "SOLUSDT" or "XRPUSDT"
                     => await FetchBinanceAsync(symbol.ToUpper()),
-                "XAUUSD" or "XAGUSD"
-                    => await FetchGoldSilverAsync(symbol.ToUpper()),
-                "USOIL" or "WTIUSD"
-                    => await FetchOilAsync(),
+                "XAUUSD" or "XAGUSD" or "USOIL"
+                    => await FetchTradingViewAsync(symbol.ToUpper()),
                 _ => (0, $"Unsupported symbol: {symbol}")
             };
         }
@@ -68,35 +83,40 @@ public class PriceService
         return (price, "");
     }
 
-    // Frankfurter.app — completely free, no API key, uses ECB/forex data
-    // XAU and XAG are priced per troy ounce in USD
-    private async Task<(double, string)> FetchGoldSilverAsync(string symbol)
+    // TradingView scanner API — same data source used by the Mathieu2301/Tradingview-API library
+    // Completely free, no key, real-time prices
+    private async Task<(double, string)> FetchTradingViewAsync(string symbol)
     {
-        // Frankfurter returns how many XAU/XAG per 1 USD
-        // We need USD per 1 XAU/XAG, so we invert
-        var metal = symbol == "XAUUSD" ? "XAU" : "XAG";
-        var url   = $"https://api.frankfurter.app/latest?from=USD&to={metal}";
-        var json  = await _http.GetStringAsync(url);
-        using var doc = JsonDocument.Parse(json);
-        var rate  = doc.RootElement.GetProperty("rates").GetProperty(metal).GetDouble();
-        // rate = XAU per 1 USD, so USD per XAU = 1/rate
-        return (1.0 / rate, "");
-    }
+        if (!TvSymbolMap.TryGetValue(symbol, out var tvSymbol))
+            return (0, $"No TradingView mapping for {symbol}");
 
-    // EIA.gov — US Energy Information Administration, completely free, no key needed
-    // Returns latest WTI crude oil spot price
-    private async Task<(double, string)> FetchOilAsync()
-    {
-        // EIA open data — WTI daily spot price, no API key required for this endpoint
-        var url  = "https://api.eia.gov/v2/petroleum/pri/spt/data/?api_key=DEMO_KEY&frequency=daily&data[0]=value&facets[series][]=RWTC&sort[0][column]=period&sort[0][direction]=desc&length=1";
-        var json = await _http.GetStringAsync(url);
+        var payload = JsonSerializer.Serialize(new
+        {
+            symbols = new { tickers = new[] { tvSymbol }, query = new { types = Array.Empty<string>() } },
+            columns = new[] { "close", "lp" }  // lp = last price
+        });
+
+        var response = await _http.PostAsync(
+            "https://scanner.tradingview.com/global/scan",
+            new StringContent(payload, Encoding.UTF8, "application/json"));
+
+        var json = await response.Content.ReadAsStringAsync();
         using var doc = JsonDocument.Parse(json);
-        var data  = doc.RootElement
-                       .GetProperty("response")
-                       .GetProperty("data");
-        var first = data.EnumerateArray().First();
-        var price = first.GetProperty("value").GetDouble();
-        return (price, "");
+
+        var data = doc.RootElement.GetProperty("data");
+        foreach (var item in data.EnumerateArray())
+        {
+            var d = item.GetProperty("d");
+            // Try lp (last price) first, then close
+            for (int i = 0; i < d.GetArrayLength(); i++)
+            {
+                var el = d[i];
+                if (el.ValueKind == JsonValueKind.Number)
+                    return (el.GetDouble(), "");
+            }
+        }
+
+        return (0, $"No price data returned for {symbol}");
     }
 
     public void SetTestPrice(string symbol, double price) =>
