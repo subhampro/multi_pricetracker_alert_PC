@@ -1,23 +1,10 @@
-## v1.6.5 - Real TradingView Symbol Icons + Update Fix
+## v1.6.6 - Icon Fixes
 
-### ✨ Real Symbol Icons
-- Actual TradingView SVG icons now shown for every symbol — exactly like TradingView's watchlist
-  - BTC → crypto/XTVCBTC (orange Bitcoin logo)
-  - ETH → crypto/XTVCETH (Ethereum diamond)
-  - BNB → crypto/XTVCBNB
-  - SOL → crypto/XTVCSOL
-  - XRP → crypto/XTVCXRP
-  - Gold → metal/gold
-  - Silver → metal/silver
-  - Oil → crude-oil
-- Icons downloaded from TradingView CDN on first launch and cached locally
-- Colored circle fallback shown instantly while SVG loads
-- Icons appear in both the symbol dropdown and the alert list
-
-### 🔧 Auto-Update Fix
-- Updater now waits for the exact process PID to exit before replacing the file
-- New exe moves directly over old exe — no leftover `_old.exe` files
-- Only `PriceTrackerAlert.exe` remains after update, nothing else
+### 🐛 Fixes
+- Symbol icons now load correctly from TradingView CDN (was showing "S" fallback)
+- Source dropdown (Binance/TradingView) no longer shows round icon — text only
+- Condition dropdown (Above/Below) no longer shows round icon — text only
+- Settings footer version corrected to v1.6.6
 
 ### 📦 Install
 Single `.exe` — no install needed.

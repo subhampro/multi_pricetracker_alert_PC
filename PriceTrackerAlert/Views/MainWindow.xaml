@@ -166,9 +166,9 @@
                                             Padding="{TemplateBinding Padding}" CornerRadius="4" Margin="4,1">
                                         <StackPanel Orientation="Horizontal">
                                             <views:SymbolIconControl
-                                                Symbol="{Binding Content, RelativeSource={RelativeSource AncestorType=ContentPresenter}}"
+                                                Symbol="{Binding}"
                                                 Width="22" Height="22" Margin="0,0,8,0" VerticalAlignment="Center"/>
-                                            <ContentPresenter VerticalAlignment="Center"/>
+                                            <TextBlock Text="{Binding}" Foreground="White" VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </Border>
                                     <ControlTemplate.Triggers>
@@ -402,6 +402,29 @@
                     <ComboBox Style="{StaticResource DarkComboBox}"
                               ItemsSource="{Binding AvailableSources}"
                               SelectedItem="{Binding NewSource}">
+                        <!-- Override ItemContainerStyle to remove icons for source items -->
+                        <ComboBox.ItemContainerStyle>
+                            <Style TargetType="ComboBoxItem">
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="Background" Value="#2D2D3F"/>
+                                <Setter Property="Padding" Value="10,7"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ComboBoxItem">
+                                            <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                                    Padding="{TemplateBinding Padding}" CornerRadius="4" Margin="4,1">
+                                                <ContentPresenter/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsHighlighted" Value="True">
+                                                    <Setter TargetName="Bd" Property="Background" Value="#3D3D5F"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ComboBox.ItemContainerStyle>
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Converter={StaticResource SourceToString}}" Foreground="White"/>
@@ -424,6 +447,28 @@
                                Margin="0,0,0,5"/>
                     <ComboBox Style="{StaticResource DarkComboBox}"
                               SelectedIndex="{Binding NewCondition, Converter={StaticResource ConditionIdx}}">
+                        <ComboBox.ItemContainerStyle>
+                            <Style TargetType="ComboBoxItem">
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="Background" Value="#2D2D3F"/>
+                                <Setter Property="Padding" Value="10,7"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ComboBoxItem">
+                                            <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                                    Padding="{TemplateBinding Padding}" CornerRadius="4" Margin="4,1">
+                                                <ContentPresenter/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsHighlighted" Value="True">
+                                                    <Setter TargetName="Bd" Property="Background" Value="#3D3D5F"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ComboBox.ItemContainerStyle>
                         <ComboBoxItem>▲  Above</ComboBoxItem>
                         <ComboBoxItem>▼  Below</ComboBoxItem>
                     </ComboBox>
