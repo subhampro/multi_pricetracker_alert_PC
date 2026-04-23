@@ -1,11 +1,11 @@
-## v1.6.7 - Symbol Icons Fixed
+## v1.6.8 - Settings Redesign
 
-### 🐛 Root Cause Fixed
-- Symbol dropdown was showing "PriceTrackerAlert.ViewModels.MainViewModel" text and "P" icon
-- Root cause: ComboBox used hardcoded ComboBoxItem elements, so {Binding} resolved to MainViewModel instead of the symbol string
-- Fix: Symbol list now bound to AvailableSymbols collection — {Binding} correctly gets "BTCUSDT", "XAUUSD" etc.
-- TradingView SVG icons now load correctly for all symbols
-- Colored circle background kept behind SVG (TradingView icons have transparent backgrounds)
+### ✨ Settings Overhaul
+- Removed API Keys section entirely — all data sources are free with no key needed
+- New clean modern UI with toggle switches for checkboxes
+- DATA SOURCES section shows all 3 sources with green "Free" badges
+- Sections: POLLING / SOUND / BEHAVIOUR / DATA SOURCES
+- Removed GoldApiKey and OilApiKey from app settings
 
 ### 📦 Install
 Single `.exe` — no install needed.

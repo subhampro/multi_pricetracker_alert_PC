@@ -267,7 +267,7 @@ public class MainViewModel : INotifyPropertyChanged
     private void ApplySettings()
     {
         _audio.Volume = Settings.Volume;
-        _prices.Configure(Settings.GoldApiKey, Settings.OilApiKey);
+        _prices.Configure("", "");
         _engine.Start(Settings.CheckIntervalSeconds);
         AutoStartService.Set(Settings.AutoStartWithWindows);
     }
