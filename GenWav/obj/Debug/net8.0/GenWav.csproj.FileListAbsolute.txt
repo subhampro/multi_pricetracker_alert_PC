@@ -1,0 +1,14 @@
+f:\GitRepo\multi_pricetracker_alert_PC\GenWav\bin\Debug\net8.0\GenWav.exe
+f:\GitRepo\multi_pricetracker_alert_PC\GenWav\bin\Debug\net8.0\GenWav.deps.json
+f:\GitRepo\multi_pricetracker_alert_PC\GenWav\bin\Debug\net8.0\GenWav.runtimeconfig.json
+f:\GitRepo\multi_pricetracker_alert_PC\GenWav\bin\Debug\net8.0\GenWav.dll
+f:\GitRepo\multi_pricetracker_alert_PC\GenWav\bin\Debug\net8.0\GenWav.pdb
+f:\GitRepo\multi_pricetracker_alert_PC\GenWav\obj\Debug\net8.0\GenWav.GeneratedMSBuildEditorConfig.editorconfig
+f:\GitRepo\multi_pricetracker_alert_PC\GenWav\obj\Debug\net8.0\GenWav.AssemblyInfoInputs.cache
+f:\GitRepo\multi_pricetracker_alert_PC\GenWav\obj\Debug\net8.0\GenWav.AssemblyInfo.cs
+f:\GitRepo\multi_pricetracker_alert_PC\GenWav\obj\Debug\net8.0\GenWav.csproj.CoreCompileInputs.cache
+f:\GitRepo\multi_pricetracker_alert_PC\GenWav\obj\Debug\net8.0\GenWav.dll
+f:\GitRepo\multi_pricetracker_alert_PC\GenWav\obj\Debug\net8.0\refint\GenWav.dll
+f:\GitRepo\multi_pricetracker_alert_PC\GenWav\obj\Debug\net8.0\GenWav.pdb
+f:\GitRepo\multi_pricetracker_alert_PC\GenWav\obj\Debug\net8.0\GenWav.genruntimeconfig.cache
+f:\GitRepo\multi_pricetracker_alert_PC\GenWav\obj\Debug\net8.0\ref\GenWav.dll
